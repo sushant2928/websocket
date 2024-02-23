@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket Chat</title>
+  </head>
+  <body>
+    <h1>WebSocket Chat</h1>
+
+    <div id="messages"></div>
+
+    <input type="text" id="messageInput" placeholder="Type a message..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+      const ws = new WebSocket("ws://localhost:8080");
+
+      // Event listener for when the WebSocket connection is established
+      ws.addEventListener("open", function (event) {
+        console.log("Connected to WebSocket server");
+      });
+
+      // Event listener for incoming messages from the WebSocket server
+      ws.addEventListener("message", function (event) {
+        
+        const reader = new FileReader();
+        // Event handler for when the Blob data is loaded
+        reader.onload = function (event) {
+          const blobText = event.target.result;
+
+          // Set the Blob data as text content of the <p> tag
+
+          const messagesDiv = document.getElementById("messages");
+          const messageParagraph = document.createElement("p");
+          messageParagraph.textContent = blobText;
+          messagesDiv.appendChild(messageParagraph);
+        };
+
+        // Event handler for errors during Blob data reading
+        reader.onerror = function (event) {
+          console.error("Error reading Blob data:", event.target.error);
+        };
+
+        // Read the Blob data as text (or in any other format)
+        if (event.data instanceof Blob) reader.readAsText(event.data);
+      });
+
+      // Function to send a message to the WebSocket server
+      function sendMessage() {
+        console.log("clicked");
+        const messageInput = document.getElementById("messageInput");
+        const message = messageInput.value;
+        if (ws.readyState === WebSocket.OPEN && message.trim() !== "") {
+          ws.send(message);
+          messageInput.value = "";
+          console.log("Sent message to server:", message);
+        } else {
+          console.error("WebSocket connection is not open or message is empty");
+        }
+      }
+    </script>
+  </body>
+</html>

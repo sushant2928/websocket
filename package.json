@@ -1,0 +1,13 @@
+{
+  "name": "websocket",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "backend": "cd backend && npm start",
+    "frontend": "cd frontend && http-server -p 3000",
+    "frontend2": "cd frontend && http-server -p 3001"
+  },
+  "author": "",
+  "license": "ISC"
+}
